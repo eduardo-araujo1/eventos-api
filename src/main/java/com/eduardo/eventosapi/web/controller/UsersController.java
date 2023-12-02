@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login")
@@ -34,6 +36,12 @@ public class UsersController {
     public ResponseEntity<UsersResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UsersRequestDTO dto){
         Users updateUser = service.update(id, dto);
         return ResponseEntity.ok(UsersMapper.toDto(updateUser));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UsersResponseDTO>> getAll(){
+        List<Users> users = service.findAll();
+        return ResponseEntity.ok(UsersMapper.toListDto(users));
     }
 
 
