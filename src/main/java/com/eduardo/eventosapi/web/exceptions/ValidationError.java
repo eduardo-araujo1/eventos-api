@@ -8,6 +8,8 @@ import java.util.List;
 
 @Getter
 public class ValidationError extends ErrorMessage {
+
+    private List<FieldMessage> errors = new ArrayList<>();
     public ValidationError(Instant timeStamp, Integer status, String error, String path) {
         super(timeStamp, status, error, path);
     }
@@ -16,5 +18,5 @@ public class ValidationError extends ErrorMessage {
         errors.add(new FieldMessage(fieldName, message));
     }
 
-    private List<FieldMessage> errors = new ArrayList<>();
+
 }

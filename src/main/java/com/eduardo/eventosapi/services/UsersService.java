@@ -1,6 +1,7 @@
 package com.eduardo.eventosapi.services;
 
 import com.eduardo.eventosapi.entities.Users;
+import com.eduardo.eventosapi.exception.DataBaseException;
 import com.eduardo.eventosapi.exception.EmailUniqueViolation;
 import com.eduardo.eventosapi.exception.EntityNotFoundException;
 import com.eduardo.eventosapi.exception.ResourceNotFoundException;
@@ -9,6 +10,7 @@ import com.eduardo.eventosapi.web.dtos.UsersRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -51,12 +53,19 @@ public class UsersService {
         }
 
     }
-    
+    @Transactional(readOnly = true)
     public List<Users> findAll() {
         return repository.findAll();
     }
-
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        if (!repository.existsById(id)) {
+            throw new DataBaseException("Recurso não encontrado");
+        }
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataBaseException("Falha de integridade referencial");
+        }
     }
 }
