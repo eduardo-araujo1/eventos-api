@@ -5,20 +5,32 @@ import com.eduardo.eventosapi.services.UsersService;
 import com.eduardo.eventosapi.web.dtos.UsersRequestDTO;
 import com.eduardo.eventosapi.web.dtos.UsersResponseDTO;
 import com.eduardo.eventosapi.web.dtos.mapper.UsersMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.annotation.Target;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login")
+@Tag(name = "users")
 public class UsersController {
 
     private final UsersService service;
+
+    @Operation(summary = "Cria um novo usuário", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário criado com sucesso."),
+            @ApiResponse(responseCode = "409", description = "Email ou CPF já cadastrado")
+    })
 
     @PostMapping
     public ResponseEntity<UsersResponseDTO> create (@Valid @RequestBody UsersRequestDTO dto){
