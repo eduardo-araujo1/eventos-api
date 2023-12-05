@@ -25,4 +25,5 @@ public class Users {
     @Column(name = "cpf", nullable = false,unique = true)
     private String cpf;
 
+
 }
