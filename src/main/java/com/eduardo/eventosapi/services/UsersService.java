@@ -1,6 +1,6 @@
 package com.eduardo.eventosapi.services;
 
-import com.eduardo.eventosapi.entities.Users;
+import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.exception.DataBaseException;
 import com.eduardo.eventosapi.exception.EmailUniqueViolation;
 import com.eduardo.eventosapi.exception.EntityNotFoundException;
@@ -22,25 +22,25 @@ public class UsersService {
     private final UsersRepository repository;
 
     @Transactional
-    public Users create(Users users) {
+    public User create(User user) {
         try {
-            return repository.save(users);
+            return repository.save(user);
         } catch (DataIntegrityViolationException ex) {
-            throw new EmailUniqueViolation(String.format("Email '%s' já cadastrado", users.getEmail()));
+            throw new EmailUniqueViolation(String.format("Email '%s' já cadastrado", user.getEmail()));
         }
 
     }
 
     @Transactional(readOnly = true)
-    public Users findById(Long id) {
+    public User findById(Long id) {
         return repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Usuario id=%s não encontrado", id)));
     }
 
     @Transactional
-    public Users update(Long id, UsersRequestDTO dto) {
+    public User update(Long id, UsersRequestDTO dto) {
         try {
-            Users existingUser = findById(id);
+            User existingUser = findById(id);
 
             existingUser.setName(dto.getName());
             existingUser.setCpf(dto.getCpf());
@@ -54,7 +54,7 @@ public class UsersService {
 
     }
     @Transactional(readOnly = true)
-    public List<Users> findAll() {
+    public List<User> findAll() {
         return repository.findAll();
     }
     @Transactional(propagation = Propagation.SUPPORTS)

@@ -1,6 +1,6 @@
 package com.eduardo.eventosapi.web.controller;
 
-import com.eduardo.eventosapi.entities.Users;
+import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.services.UsersService;
 import com.eduardo.eventosapi.web.dtos.UsersRequestDTO;
 import com.eduardo.eventosapi.web.dtos.UsersResponseDTO;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.annotation.Target;
 import java.util.List;
 
 @RestController
@@ -34,7 +33,7 @@ public class UsersController {
 
     @PostMapping
     public ResponseEntity<UsersResponseDTO> create (@Valid @RequestBody UsersRequestDTO dto){
-       Users createUser = service.create(UsersMapper.toUser(dto));
+       User createUser = service.create(UsersMapper.toUser(dto));
        return ResponseEntity.status(HttpStatus.CREATED).body(UsersMapper.toDto(createUser));
     }
 
@@ -46,8 +45,8 @@ public class UsersController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UsersResponseDTO> findById (@PathVariable Long id){
-        Users users = service.findById(id);
-        return ResponseEntity.ok(UsersMapper.toDto(users));
+        User user = service.findById(id);
+        return ResponseEntity.ok(UsersMapper.toDto(user));
     }
 
     @Operation(summary = "Atualiza dados do usuário", method = "PUT")
@@ -57,7 +56,7 @@ public class UsersController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<UsersResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UsersRequestDTO dto){
-        Users updateUser = service.update(id, dto);
+        User updateUser = service.update(id, dto);
         return ResponseEntity.ok(UsersMapper.toDto(updateUser));
     }
 
@@ -67,7 +66,7 @@ public class UsersController {
     })
     @GetMapping
     public ResponseEntity<List<UsersResponseDTO>> getAll(){
-        List<Users> users = service.findAll();
+        List<User> users = service.findAll();
         return ResponseEntity.ok(UsersMapper.toListDto(users));
     }
 
