@@ -2,6 +2,7 @@ package com.eduardo.eventosapi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -19,12 +20,13 @@ public class Event {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title")
     private String title;
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
-    @Column(name = "location", nullable = false)
+    @Column(name = "location")
     private String location;
-    @Column(name = "date", nullable = false)
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @Column(name = "date")
     private LocalDate date;
 }
