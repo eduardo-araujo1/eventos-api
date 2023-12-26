@@ -3,6 +3,8 @@ package com.eduardo.eventosapi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -24,6 +26,8 @@ public class User {
     private String email;
     @Column(name = "cpf", nullable = false,unique = true)
     private String cpf;
+    @OneToMany(mappedBy = "user")
+    private List<Registration> registrations;
 
 
 }

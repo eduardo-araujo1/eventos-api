@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "events")
@@ -26,7 +27,8 @@ public class Event {
     private String description;
     @Column(name = "location")
     private String location;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
     @Column(name = "date")
     private LocalDate date;
+    @OneToMany(mappedBy = "event")
+    private List<Registration> registrations;
 }

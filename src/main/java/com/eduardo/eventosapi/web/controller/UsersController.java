@@ -1,6 +1,7 @@
 package com.eduardo.eventosapi.web.controller;
 
 import com.eduardo.eventosapi.entities.User;
+import com.eduardo.eventosapi.services.RegistrationService;
 import com.eduardo.eventosapi.services.UsersService;
 import com.eduardo.eventosapi.web.dtos.UsersRequestDTO;
 import com.eduardo.eventosapi.web.dtos.UsersResponseDTO;
@@ -19,11 +20,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/login")
+@RequestMapping("/users")
 @Tag(name = "users")
 public class UsersController {
 
     private final UsersService service;
+    private final RegistrationService registrationService;
 
     @Operation(summary = "Cria um novo usuário", method = "POST")
     @ApiResponses(value = {
@@ -81,5 +83,9 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-
+    @PostMapping("/{userId}/register/{eventId}")
+    public ResponseEntity<Void> registerUserForEvent(@PathVariable Long userId, @PathVariable Long eventId){
+        registrationService.registerUserForEvent(userId,eventId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }
