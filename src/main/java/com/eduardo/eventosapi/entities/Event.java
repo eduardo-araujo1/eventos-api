@@ -23,8 +23,8 @@ public class Event {
     private String title;
     @Column(name = "description", nullable = false)
     private String description;
-    @Column(name = "location", nullable = false, unique = true)
+    @Column(name = "location", nullable = false)
     private String location;
-    @Column(name = "date", nullable = false, unique = true)
+    @Column(name = "date", nullable = false)
     private LocalDate date;
 }

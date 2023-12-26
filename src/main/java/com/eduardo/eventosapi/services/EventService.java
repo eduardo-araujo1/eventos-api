@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class EventService {
@@ -22,5 +24,10 @@ public class EventService {
     public Event findById(Long id){
         return repostirory.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(String.format("Evento id=%s não encontrado", id)));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Event> findAll(){
+        return repostirory.findAll();
     }
 }
