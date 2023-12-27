@@ -6,7 +6,7 @@ import com.eduardo.eventosapi.exception.EmailUniqueViolation;
 import com.eduardo.eventosapi.exception.EntityNotFoundException;
 import com.eduardo.eventosapi.exception.ResourceNotFoundException;
 import com.eduardo.eventosapi.repositories.UsersRepository;
-import com.eduardo.eventosapi.web.dtos.UsersRequestDTO;
+import com.eduardo.eventosapi.web.dtos.request.UsersRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

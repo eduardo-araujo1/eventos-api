@@ -1,10 +1,14 @@
 package com.eduardo.eventosapi.web.controller;
 
+import com.eduardo.eventosapi.entities.Registration;
 import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.services.RegistrationService;
 import com.eduardo.eventosapi.services.UsersService;
-import com.eduardo.eventosapi.web.dtos.UsersRequestDTO;
-import com.eduardo.eventosapi.web.dtos.UsersResponseDTO;
+import com.eduardo.eventosapi.web.dtos.mapper.RegistrationMapper;
+import com.eduardo.eventosapi.web.dtos.request.RegistrationRequestDTO;
+import com.eduardo.eventosapi.web.dtos.request.UsersRequestDTO;
+import com.eduardo.eventosapi.web.dtos.response.RegistrationResponseDTO;
+import com.eduardo.eventosapi.web.dtos.response.UsersResponseDTO;
 import com.eduardo.eventosapi.web.dtos.mapper.UsersMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -84,8 +88,15 @@ public class UsersController {
     }
 
     @PostMapping("/{userId}/register/{eventId}")
-    public ResponseEntity<Void> registerUserForEvent(@PathVariable Long userId, @PathVariable Long eventId){
-        registrationService.registerUserForEvent(userId,eventId);
+    public ResponseEntity<Void> registerUserForEvent(@RequestBody RegistrationRequestDTO registrationRequestDTO){
+        registrationService.registerUserForEvent(registrationRequestDTO.getUserId(), registrationRequestDTO.getEventId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/{userId}/event-registrations")
+    public ResponseEntity <List<RegistrationResponseDTO>>  getRegistrationsByUser(@PathVariable Long userId){
+        List<Registration> registrations = registrationService.getRegistrationsByUserId(userId);
+        List<RegistrationResponseDTO> responseDTOList = RegistrationMapper.toListDto(registrations);
+        return ResponseEntity.ok(responseDTOList);
     }
 }

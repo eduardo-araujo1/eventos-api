@@ -1,8 +1,8 @@
 package com.eduardo.eventosapi.web.dtos.mapper;
 
 import com.eduardo.eventosapi.entities.Event;
-import com.eduardo.eventosapi.web.dtos.EventRequestDTO;
-import com.eduardo.eventosapi.web.dtos.EventResponseDTO;
+import com.eduardo.eventosapi.web.dtos.request.EventRequestDTO;
+import com.eduardo.eventosapi.web.dtos.response.EventResponseDTO;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;

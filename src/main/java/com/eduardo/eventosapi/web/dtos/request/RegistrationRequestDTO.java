@@ -1,4 +1,4 @@
-package com.eduardo.eventosapi.web.dtos;
+package com.eduardo.eventosapi.web.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsersResponseDTO {
+public class RegistrationRequestDTO {
 
-    private Long id;
-    private String name;
-    private String email;
-    private String cpf;
+    private Long userId;
+    private Long eventId;
 }

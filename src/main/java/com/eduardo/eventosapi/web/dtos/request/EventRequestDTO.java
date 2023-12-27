@@ -1,5 +1,6 @@
-package com.eduardo.eventosapi.web.dtos;
+package com.eduardo.eventosapi.web.dtos.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +12,12 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventResponseDTO {
+public class EventRequestDTO {
 
-    private Long id;
+    @NotBlank
     private String title;
     private String description;
+    @NotBlank
     private String location;
     private LocalDate date;
 }

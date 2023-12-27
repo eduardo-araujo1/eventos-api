@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +40,15 @@ public class RegistrationService {
         return user.getRegistrations().stream().anyMatch(
                 registration -> registration.getEvent().equals(event)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<Registration> getRegistrationsByUserId(Long userId) {
+        return registrationRepository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Registration> getRegistrationsByEventId(Long eventId) {
+        return registrationRepository.findByEventId(eventId);
     }
 }
