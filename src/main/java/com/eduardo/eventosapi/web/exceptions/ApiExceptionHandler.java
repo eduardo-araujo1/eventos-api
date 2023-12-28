@@ -1,9 +1,6 @@
 package com.eduardo.eventosapi.web.exceptions;
 
-import com.eduardo.eventosapi.exception.DataBaseException;
-import com.eduardo.eventosapi.exception.EmailUniqueViolation;
-import com.eduardo.eventosapi.exception.EntityNotFoundException;
-import com.eduardo.eventosapi.exception.ResourceNotFoundException;
+import com.eduardo.eventosapi.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -44,5 +41,11 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<ErrorMessage> registrationException(RegistrationException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.CONFLICT;
+        ErrorMessage err = new ErrorMessage(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
 
 }

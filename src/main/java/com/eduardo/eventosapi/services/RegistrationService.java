@@ -3,6 +3,8 @@ package com.eduardo.eventosapi.services;
 import com.eduardo.eventosapi.entities.Event;
 import com.eduardo.eventosapi.entities.Registration;
 import com.eduardo.eventosapi.entities.User;
+import com.eduardo.eventosapi.exception.EntityNotFoundException;
+import com.eduardo.eventosapi.exception.RegistrationException;
 import com.eduardo.eventosapi.repositories.EventRepostirory;
 import com.eduardo.eventosapi.repositories.RegistrationRepository;
 import com.eduardo.eventosapi.repositories.UsersRepository;
@@ -24,11 +26,14 @@ public class RegistrationService {
 
     @Transactional
     public void registerUserForEvent(Long userId, Long eventId){
-        User user = usersRepository.findById(userId).orElseThrow(RuntimeException::new);
-        Event event = eventRepostirory.findById(eventId).orElseThrow(RuntimeException::new);
+        User user = usersRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o ID: " + userId));
+
+        Event event = eventRepostirory.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado com o ID:" + eventId));
 
         if (isUserAlreadyRegistered(user,event)){
-            throw new RuntimeException("Usuario já está registrado para o evento");
+            throw new RegistrationException("Usuario já está registrado para o evento.");
         }
 
         Registration registration = new Registration(user,event, LocalDate.now());
@@ -36,11 +41,12 @@ public class RegistrationService {
 
     }
 
-    private boolean isUserAlreadyRegistered(User user, Event event){
-        return user.getRegistrations().stream().anyMatch(
-                registration -> registration.getEvent().equals(event)
-        );
+    private boolean isUserAlreadyRegistered(User user, Event event) {
+        return user.getRegistrations().stream()
+                .map(Registration::getEvent)
+                .anyMatch(event::equals);
     }
+
 
     @Transactional(readOnly = true)
     public List<Registration> getRegistrationsByUserId(Long userId) {
