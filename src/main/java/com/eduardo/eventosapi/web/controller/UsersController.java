@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-@Tag(name = "users")
+@Tag(name = "users", description = "API para gerenciamento de usuários")
 public class UsersController {
 
     private final UsersService service;
@@ -38,9 +38,9 @@ public class UsersController {
     })
 
     @PostMapping
-    public ResponseEntity<UsersResponseDTO> create (@Valid @RequestBody UsersRequestDTO dto){
-       User createUser = service.create(UsersMapper.toUser(dto));
-       return ResponseEntity.status(HttpStatus.CREATED).body(UsersMapper.toDto(createUser));
+    public ResponseEntity<UsersResponseDTO> create(@Valid @RequestBody UsersRequestDTO dto) {
+        User createUser = service.create(UsersMapper.toUser(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(UsersMapper.toDto(createUser));
     }
 
     @Operation(summary = "Busca um usuário pelo ID", method = "GET")
@@ -50,7 +50,7 @@ public class UsersController {
     })
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsersResponseDTO> findById (@PathVariable Long id){
+    public ResponseEntity<UsersResponseDTO> findById(@PathVariable Long id) {
         User user = service.findById(id);
         return ResponseEntity.ok(UsersMapper.toDto(user));
     }
@@ -61,7 +61,7 @@ public class UsersController {
             @ApiResponse(responseCode = "422", description = "Campos inválidos ou mal fortamados.")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<UsersResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UsersRequestDTO dto){
+    public ResponseEntity<UsersResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UsersRequestDTO dto) {
         User updateUser = service.update(id, dto);
         return ResponseEntity.ok(UsersMapper.toDto(updateUser));
     }
@@ -71,30 +71,42 @@ public class UsersController {
             @ApiResponse(responseCode = "200", description = "Lista com todos os usuarios cadastrados."),
     })
     @GetMapping
-    public ResponseEntity<List<UsersResponseDTO>> getAll(){
+    public ResponseEntity<List<UsersResponseDTO>> getAll() {
         List<User> users = service.findAll();
         return ResponseEntity.ok(UsersMapper.toListDto(users));
     }
 
     @Operation(summary = "Deletar usuario por ID", method = "DELETE")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "Usuario deletado com sucesso."),
-            @ApiResponse(responseCode = "404",description = "Usuario não encontrado.")
+            @ApiResponse(responseCode = "200", description = "Usuario deletado com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Usuario não encontrado.")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(summary = "Registrar usuário para evento",method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuário registrado com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Usuário ou evento não encontrado."),
+            @ApiResponse(responseCode = "409", description = "Usuário já registrado para o evento.")
+    })
     @PostMapping("/{userId}/register/{eventId}")
-    public ResponseEntity<Void> registerUserForEvent(@RequestBody RegistrationRequestDTO registrationRequestDTO){
+    public ResponseEntity<Void> registerUserForEvent(@RequestBody RegistrationRequestDTO registrationRequestDTO) {
         registrationService.registerUserForEvent(registrationRequestDTO.getUserId(), registrationRequestDTO.getEventId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Operation(summary = "Obter registros de eventos por usuário",method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Registros de eventos obtidos com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado.")
+    })
+
     @GetMapping("/{userId}/event-registrations")
-    public ResponseEntity <List<RegistrationResponseDTO>>  getRegistrationsByUser(@PathVariable Long userId){
+    public ResponseEntity<List<RegistrationResponseDTO>> getRegistrationsByUser(@PathVariable Long userId) {
         List<Registration> registrations = registrationService.getRegistrationsByUserId(userId);
         List<RegistrationResponseDTO> responseDTOList = RegistrationMapper.toListDto(registrations);
         return ResponseEntity.ok(responseDTOList);
