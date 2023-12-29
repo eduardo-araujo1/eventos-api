@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -30,4 +31,8 @@ public class Event {
     private LocalDate date;
     @OneToMany(mappedBy = "event")
     private List<Registration> registrations;
+
+
+    public Event(long l, String eventName, String description, String location, LocalDate localDate) {
+    }
 }
