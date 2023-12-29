@@ -1,10 +1,13 @@
 package com.eduardo.eventosapi.domain;
 
 import com.eduardo.eventosapi.entities.User;
+import com.eduardo.eventosapi.exception.DataBaseException;
 import com.eduardo.eventosapi.exception.EmailUniqueViolation;
 import com.eduardo.eventosapi.exception.EntityNotFoundException;
+import com.eduardo.eventosapi.exception.ResourceNotFoundException;
 import com.eduardo.eventosapi.repositories.UsersRepository;
 import com.eduardo.eventosapi.services.UsersService;
+import com.eduardo.eventosapi.web.dtos.request.UsersRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,12 +15,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -37,6 +41,7 @@ public class UserServiceTest {
 
     @Mock
     private UsersRepository repository;
+
 
     @InjectMocks
     private UsersService userService;
@@ -75,7 +80,89 @@ public class UserServiceTest {
         assertThatThrownBy(() -> userService.findById(10L)).isInstanceOf(EntityNotFoundException.class);
     }
 
+    @Test
+    public void updateUser_WithValidData_ReturnsUpdatedUser() {
+        // Mock do repositório
+        when(repository.findById(1L)).thenReturn(Optional.of(USER));
 
+        // Dados atualizados do usuário
+        UsersRequestDTO updatedUserData = new UsersRequestDTO("Updated Name", "updatedPassword", "updated@example.com", "987654321");
+
+        // Mock do método save do repositório
+        when(repository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Chama o método de atualização
+        User updatedUser = userService.update(1L, updatedUserData);
+
+        // Verificações
+        assertThat(updatedUser).isNotNull();
+        assertThat(updatedUser.getName()).isEqualTo("Updated Name");
+        assertThat(updatedUser.getPassword()).isEqualTo("updatedPassword");
+        assertThat(updatedUser.getEmail()).isEqualTo("updated@example.com");
+        assertThat(updatedUser.getCpf()).isEqualTo("987654321");
+
+        // Verifica se o método save foi chamado no repositório com o usuário atualizado
+        verify(repository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void updateUser_WithInvalidData_ReturnsUpdatedUser() {
+
+        when(repository.findById(2L)).thenReturn(Optional.of(USER));
+
+        when(repository.findById(2L)).thenThrow(EntityNotFoundException.class);
+
+        // Dados atualizados do usuário
+        UsersRequestDTO updatedUserData = new UsersRequestDTO("", "", "", "");
+
+        // Chama o método de atualização
+        assertThatThrownBy(() -> userService.update(2L, updatedUserData))
+                .isInstanceOf(ResourceNotFoundException.class);
+
+        // Certifica-se de que o método save não foi chamado
+        verify(repository, never()).save(any(User.class));
+    }
+
+
+    @Test
+    public void getAllUsers_ReturnsListOfUsers() {
+        when(repository.findAll()).thenReturn(USER_LIST);
+
+        List<User> users = userService.findAll();
+
+        assertThat(users).isNotNull();
+        assertThat(users).hasSize(2);
+    }
+
+    @Test
+    public void getAllUsers_ReturnsEmptyList() {
+        // Mock do repositório para retornar uma lista vazia
+        when(repository.findAll()).thenReturn(Collections.emptyList());
+
+        // Chama o método getAllUsers
+        List<User> users = userService.findAll();
+
+        // Verifica se a lista retornada é vazia
+        assertThat(users).isNotNull().isEmpty();
+    }
+
+
+
+    @Test
+    public void deleteUser_ByExistingId_DeletesUser() {
+        when(repository.existsById(1L)).thenReturn(true);
+
+        userService.deleteById(1L);
+
+        verify(repository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    public void deleteUser_ByNonExistingId_ThrowsException() {
+        when(repository.existsById(10L)).thenReturn(false);
+
+        assertThatThrownBy(() -> userService.deleteById(10L)).isInstanceOf(DataBaseException.class);
+    }
 
 
 }

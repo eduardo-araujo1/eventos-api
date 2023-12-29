@@ -47,5 +47,10 @@ public class ApiExceptionHandler {
         ErrorMessage err = new ErrorMessage(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
-
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> handleException(Exception e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ErrorMessage err = new ErrorMessage(Instant.now(), status.value(), "Erro interno no servidor", request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
 }

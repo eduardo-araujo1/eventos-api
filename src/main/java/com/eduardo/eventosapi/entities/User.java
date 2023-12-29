@@ -30,4 +30,7 @@ public class User {
     private List<Registration> registrations;
 
 
+    public User(long l, String johnDoe, String password123, String mail, String number) {
+
+    }
 }
