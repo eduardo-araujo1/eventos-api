@@ -1,4 +1,4 @@
-package com.eduardo.eventosapi.domain;
+package com.eduardo.eventosapi.service;
 
 import com.eduardo.eventosapi.entities.Event;
 import com.eduardo.eventosapi.entities.Registration;

@@ -1,4 +1,4 @@
-package com.eduardo.eventosapi.domain;
+package com.eduardo.eventosapi.service;
 
 import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.exception.DataBaseException;
