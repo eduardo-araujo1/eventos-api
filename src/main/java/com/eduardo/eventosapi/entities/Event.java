@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -34,5 +33,8 @@ public class Event {
 
 
     public Event(long l, String eventName, String description, String location, LocalDate localDate) {
+    }
+
+    public Event(long l) {
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,26 +25,27 @@ public class RegistrationService {
     private final EventRepostirory eventRepostirory;
 
     @Transactional
-    public void registerUserForEvent(Long userId, Long eventId){
+    public void registerUserForEvent(Long userId, Long eventId) {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o ID: " + userId));
 
         Event event = eventRepostirory.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado com o ID:" + eventId));
 
-        if (isUserAlreadyRegistered(user,event)){
+        if (isUserAlreadyRegistered(user, event)) {
             throw new RegistrationException("Usuario já está registrado para o evento.");
         }
 
-        Registration registration = new Registration(user,event, LocalDate.now());
+        Registration registration = new Registration(user, event, LocalDate.now());
         registrationRepository.save(registration);
 
     }
 
-    private boolean isUserAlreadyRegistered(User user, Event event) {
-        return user.getRegistrations().stream()
-                .map(Registration::getEvent)
-                .anyMatch(event::equals);
+    public boolean isUserAlreadyRegistered(User user, Event event) {
+        return Optional.ofNullable(user.getRegistrations())
+                .map(registrations -> registrations
+                        .stream().anyMatch(registration -> event.equals(registration.getEvent())))
+                .orElse(false);
     }
 
 

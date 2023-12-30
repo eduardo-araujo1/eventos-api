@@ -33,4 +33,7 @@ public class User {
     public User(long l, String johnDoe, String password123, String mail, String number) {
 
     }
+
+    public User(long l) {
+    }
 }
