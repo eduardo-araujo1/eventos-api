@@ -1,11 +1,15 @@
 package com.eduardo.eventosapi.controller;
 
+import com.eduardo.eventosapi.entities.User;
+import com.eduardo.eventosapi.repositories.UsersRepository;
 import com.eduardo.eventosapi.web.dtos.request.UsersRequestDTO;
 import com.eduardo.eventosapi.web.dtos.response.UsersResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
@@ -27,6 +31,7 @@ public class UserControllerTestIT {
                         new UsersRequestDTO("joao", "123456", "joao@email.com", "1112223336"), UsersResponseDTO.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
         UsersResponseDTO responseDTO = responseEntity.getBody();
         assertThat(responseDTO).isNotNull();
         assertThat(responseDTO.getId()).isNotNull();
@@ -36,12 +41,61 @@ public class UserControllerTestIT {
     }
 
     @Test
-    public void createUser_thenReturnedConflictStatus() {
+    public void createUser_thenReturnConflictStatus() {
         ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
                 .postForEntity("/users",
                         new UsersRequestDTO("ana", "123456789", "ana@email.com", "123456789"), UsersResponseDTO.class);
+
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 
+    @Test
+    public void findUserById_thenReturnUser() {
+        ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
+                .getForEntity("/users/100", UsersResponseDTO.class);
 
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        UsersResponseDTO responseDTO = responseEntity.getBody();
+        assertThat(responseDTO).isNotNull();
+        assertThat(responseDTO.getId()).isEqualTo(100);
+        assertThat(responseDTO.getName()).isEqualTo("ana");
+        assertThat(responseDTO.getEmail()).isEqualTo("ana@email.com");
+    }
+
+    @Test
+    public void findUserById_thenReturnNotFound() {
+        ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
+                .getForEntity("/users/3", UsersResponseDTO.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+
+    @Test
+    public void updateUser_thenReturnUpdatedUser() {
+        UsersRequestDTO updateRequest = new UsersRequestDTO("updatedName", "newPassword", "new@email.com", "987654321");
+
+        ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
+                .exchange("/users/100", HttpMethod.PUT, new HttpEntity<>(updateRequest), UsersResponseDTO.class, updateRequest);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        UsersResponseDTO responseDTO = responseEntity.getBody();
+        assertThat(responseDTO).isNotNull();
+        assertThat(responseDTO.getId()).isEqualTo(100);
+        assertThat(responseDTO.getName()).isEqualTo("updatedName");
+        assertThat(responseDTO.getEmail()).isEqualTo("new@email.com");
+        assertThat(responseDTO.getCpf()).isEqualTo("987654321");
+    }
+
+    @Test
+    public void updateUser_thenReturnNotFoundStatus(){
+        UsersRequestDTO requestDTO = new UsersRequestDTO("updatedName", "newPassword", "new@email.com", "987654321");
+
+        ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
+                .exchange("/users/3", HttpMethod.PUT, new HttpEntity<>(requestDTO),UsersResponseDTO.class, requestDTO);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }
+
