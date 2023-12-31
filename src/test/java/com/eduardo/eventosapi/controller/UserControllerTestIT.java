@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -97,5 +99,28 @@ public class UserControllerTestIT {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    public void getAllUsers_thenReturnStatusOK(){
+        ResponseEntity<List> responseEntity = testRestTemplate
+                .getForEntity("/users", List.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        List<UsersResponseDTO> responseDtos = (List<UsersResponseDTO>) responseEntity.getBody();
+        assertThat(responseDtos).isNotNull();
+        assertThat(responseDtos.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void deleteUserById_thenReturnNoContentStatus(){
+        ResponseEntity<Void> responseEntity = testRestTemplate
+                .exchange("/users/100", HttpMethod.DELETE,null,Void.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    }
+
+    
 }
 
