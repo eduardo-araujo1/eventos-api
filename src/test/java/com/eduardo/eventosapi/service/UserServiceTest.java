@@ -112,10 +112,10 @@ public class UserServiceTest {
 
         when(repository.findById(2L)).thenThrow(EntityNotFoundException.class);
 
-        // Dados atualizados do usuário
+
         UsersRequestDTO updatedUserData = new UsersRequestDTO("", "", "", "");
 
-        // Chama o método de atualização
+
         assertThatThrownBy(() -> userService.update(2L, updatedUserData))
                 .isInstanceOf(ResourceNotFoundException.class);
 

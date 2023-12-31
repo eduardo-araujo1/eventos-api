@@ -36,7 +36,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(DataBaseException.class)
     public ResponseEntity<ErrorMessage> dataBaseException(DataBaseException e, HttpServletRequest request){
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status = HttpStatus.NOT_FOUND;
         ErrorMessage err = new ErrorMessage(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }

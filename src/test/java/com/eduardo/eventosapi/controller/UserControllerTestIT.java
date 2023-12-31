@@ -1,7 +1,10 @@
 package com.eduardo.eventosapi.controller;
 
+import com.eduardo.eventosapi.entities.Event;
+import com.eduardo.eventosapi.entities.Registration;
 import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.repositories.UsersRepository;
+import com.eduardo.eventosapi.web.dtos.request.RegistrationRequestDTO;
 import com.eduardo.eventosapi.web.dtos.request.UsersRequestDTO;
 import com.eduardo.eventosapi.web.dtos.response.UsersResponseDTO;
 import org.junit.jupiter.api.Test;
@@ -121,6 +124,14 @@ public class UserControllerTestIT {
 
     }
 
-    
+    @Test
+    public void deleteUserById_throwsResourceNotFoundException() {
+        ResponseEntity<Void> responseEntity = testRestTemplate
+                .exchange("/users/1", HttpMethod.DELETE, null, Void.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isNull();
+    }
+
 }
 
