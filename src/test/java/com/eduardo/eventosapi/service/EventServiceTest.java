@@ -10,15 +10,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,12 +32,7 @@ public class EventServiceTest {
     public static final Event EVENT1 = new Event(3L, "Birthday Party", "Come join the celebration", "Party Hall", LocalDate.now().plusDays(9));
     public static final Event EVENT2 = new Event(4L, "Football", "Come play football", "Morumbi Stadium", LocalDate.now().plusMonths(2));
 
-    public static final List<Event> EVENT_LIST = new ArrayList<Event>() {
-        {
-            add(EVENT1);
-            add(EVENT2);
-        }
-    };
+    public static final List<Event> EVENT_LIST = Arrays.asList(EVENT1, EVENT2);
 
     @Mock
     private EventRepostirory repostirory;
@@ -79,20 +76,27 @@ public class EventServiceTest {
 
     @Test
     public void findAllEvents_ReturnsListOfEvents() {
-        when(repostirory.findAll()).thenReturn(EVENT_LIST);
+        Page<Event> eventPage = new PageImpl<>(EVENT_LIST);
+        when(repostirory.findAll(PageRequest.of(0, 10))).thenReturn(eventPage);
 
-        List<Event> events = eventService.findAll();
+        // Chamando o método do serviço
+        Page<Event> events = eventService.findAll(0, 10);
 
-        assertThat(events).isNotNull().hasSize(2);
+        // Verificando as condições de teste
+        assertThat(events.getContent()).isNotNull().hasSize(2);
     }
 
     @Test
     public void findAllEvents_ReturnsEmptyList() {
-        when(repostirory.findAll()).thenReturn(Collections.emptyList());
+        // Mockando o método findAll do repositório para retornar uma Page vazia
+        Page<Event> emptyEventPage = new PageImpl<>(Collections.emptyList());
+        when(repostirory.findAll((Pageable) any())).thenReturn(emptyEventPage);
 
-        List<Event> events = eventService.findAll();
+        // Chamando o método do serviço
+        Page<Event> events = eventService.findAll(0,10);
 
-        assertThat(events).isNotNull().isEmpty();
+        // Verificando as condições de teste
+        assertThat(events.getContent()).isNotNull().isEmpty();
     }
 }
 

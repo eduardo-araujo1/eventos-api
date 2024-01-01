@@ -1,5 +1,6 @@
 package com.eduardo.eventosapi.service;
 
+import com.eduardo.eventosapi.entities.Event;
 import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.exception.DataBaseException;
 import com.eduardo.eventosapi.exception.EmailUniqueViolation;
@@ -13,11 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,12 +34,7 @@ public class UserServiceTest {
     public static final User USER1 = new User(3L, "Alice", "pass123", "alice@example.com", "987654321");
     public static final User USER2 = new User(4L, "Bob", "secret456", "bob@example.com", "555555555");
 
-    public static final List<User> USER_LIST = new ArrayList<User>() {
-        {
-            add(USER1);
-            add(USER2);
-        }
-    };
+    public static final List<User> USER_LIST = Arrays.asList(USER1, USER2);
 
     @Mock
     private UsersRepository repository;
@@ -126,26 +123,30 @@ public class UserServiceTest {
 
     @Test
     public void getAllUsers_ReturnsListOfUsers() {
-        when(repository.findAll()).thenReturn(USER_LIST);
+        // Mockando o método findAll do repositório para retornar uma Page
+        Page<User> userPage = new PageImpl<>(USER_LIST);
+        when(repository.findAll(PageRequest.of(0, 10))).thenReturn(userPage);
 
-        List<User> users = userService.findAll();
+        // Chamando o método do serviço
+        Page<User> users = userService.findAll(0, 10);
 
-        assertThat(users).isNotNull();
-        assertThat(users).hasSize(2);
+        // Verificando as condições de teste
+        assertThat(users.getContent()).isNotNull().hasSize(2);
     }
 
     @Test
     public void getAllUsers_ReturnsEmptyList() {
-        // Mock do repositório para retornar uma lista vazia
-        when(repository.findAll()).thenReturn(Collections.emptyList());
+        Page<User> emptyUserPage = new PageImpl<>(Collections.emptyList());
 
-        // Chama o método getAllUsers
-        List<User> users = userService.findAll();
+        // Mockando o método findAll do repositório para retornar uma Page vazia
+        when(repository.findAll((Pageable) any())).thenReturn(emptyUserPage);
 
-        // Verifica se a lista retornada é vazia
-        assertThat(users).isNotNull().isEmpty();
+        // Chamando o método do serviço
+        Page<User> users = userService.findAll(0,10);
+
+        // Verificando as condições de teste
+        assertThat(users.getContent()).isNotNull().isEmpty();
     }
-
 
 
     @Test
@@ -161,7 +162,7 @@ public class UserServiceTest {
     public void deleteUser_ByNonExistingId_ThrowsException() {
         when(repository.existsById(10L)).thenReturn(false);
 
-        assertThatThrownBy(() -> userService.deleteById(10L)).isInstanceOf(DataBaseException.class);
+        assertThatThrownBy(() -> userService.deleteById(10L)).isInstanceOf(ResourceNotFoundException.class);
     }
 
 

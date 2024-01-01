@@ -63,7 +63,7 @@ public class UsersService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteById(Long id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException("Recurso não encontrado");
+            throw new ResourceNotFoundException("Usuário não encontrado");
         }
         repository.deleteById(id);
     }
