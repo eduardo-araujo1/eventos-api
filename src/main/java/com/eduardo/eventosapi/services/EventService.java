@@ -4,6 +4,9 @@ import com.eduardo.eventosapi.entities.Event;
 import com.eduardo.eventosapi.exception.ResourceNotFoundException;
 import com.eduardo.eventosapi.repositories.EventRepostirory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +30,7 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public List<Event> findAll(){
-        return repostirory.findAll();
+    public Page<Event> findAll(int page, int itens){
+        return repostirory.findAll(PageRequest.of(page, itens));
     }
 }

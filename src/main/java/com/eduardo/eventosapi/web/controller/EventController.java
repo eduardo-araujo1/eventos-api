@@ -2,19 +2,22 @@ package com.eduardo.eventosapi.web.controller;
 
 import com.eduardo.eventosapi.entities.Event;
 import com.eduardo.eventosapi.entities.Registration;
+import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.services.EventService;
 import com.eduardo.eventosapi.services.RegistrationService;
+import com.eduardo.eventosapi.web.dtos.mapper.EventMapper;
 import com.eduardo.eventosapi.web.dtos.mapper.RegistrationMapper;
 import com.eduardo.eventosapi.web.dtos.request.EventRequestDTO;
 import com.eduardo.eventosapi.web.dtos.response.EventResponseDTO;
-import com.eduardo.eventosapi.web.dtos.mapper.EventMapper;
 import com.eduardo.eventosapi.web.dtos.response.RegistrationResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,9 +60,10 @@ public class EventController {
             @ApiResponse(responseCode = "200", description = "Lista com todos os eventos cadastrados."),
     })
     @GetMapping
-    public ResponseEntity<List<EventResponseDTO>> findAll(){
-        List<Event> eventList = service.findAll();
-        return ResponseEntity.ok(EventMapper.toListDto(eventList));
+    public ResponseEntity<Page<EventResponseDTO>> findAll(@RequestParam("page") int page, @RequestParam("itens") int itens){
+        Pageable pageable = PageRequest.of(page, itens);
+        Page<Event> eventsPage = service.findAll(page, itens);
+        return ResponseEntity.ok(eventsPage.map(EventMapper::toDto));
     }
 
     @Operation(summary = "Obter registros de usuários para um evento", method = "GET")

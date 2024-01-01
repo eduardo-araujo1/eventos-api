@@ -1,9 +1,7 @@
 package com.eduardo.eventosapi.controller;
 
 import com.eduardo.eventosapi.web.dtos.request.EventRequestDTO;
-import com.eduardo.eventosapi.web.dtos.request.UsersRequestDTO;
 import com.eduardo.eventosapi.web.dtos.response.EventResponseDTO;
-import com.eduardo.eventosapi.web.dtos.response.UsersResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
