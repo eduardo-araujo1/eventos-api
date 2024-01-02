@@ -16,7 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,6 +42,8 @@ public class EventServiceTest {
 
     @InjectMocks
     private EventService eventService;
+
+    
 
     @Test
     public void saveEvent_WithValidData_ReturnsEvent() {
@@ -79,23 +84,18 @@ public class EventServiceTest {
         Page<Event> eventPage = new PageImpl<>(EVENT_LIST);
         when(repostirory.findAll(PageRequest.of(0, 10))).thenReturn(eventPage);
 
-        // Chamando o método do serviço
         Page<Event> events = eventService.findAll(0, 10);
 
-        // Verificando as condições de teste
         assertThat(events.getContent()).isNotNull().hasSize(2);
     }
 
     @Test
     public void findAllEvents_ReturnsEmptyList() {
-        // Mockando o método findAll do repositório para retornar uma Page vazia
         Page<Event> emptyEventPage = new PageImpl<>(Collections.emptyList());
         when(repostirory.findAll((Pageable) any())).thenReturn(emptyEventPage);
 
-        // Chamando o método do serviço
         Page<Event> events = eventService.findAll(0,10);
 
-        // Verificando as condições de teste
         assertThat(events.getContent()).isNotNull().isEmpty();
     }
 }

@@ -28,7 +28,7 @@ public class Event {
     private String location;
     @Column(name = "date")
     private LocalDate date;
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event",cascade = CascadeType.ALL)
     private List<Registration> registrations;
 
 

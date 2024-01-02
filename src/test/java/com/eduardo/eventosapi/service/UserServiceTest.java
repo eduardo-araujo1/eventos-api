@@ -79,26 +79,21 @@ public class UserServiceTest {
 
     @Test
     public void updateUser_WithValidData_ReturnsUpdatedUser() {
-        // Mock do repositório
         when(repository.findById(1L)).thenReturn(Optional.of(USER));
 
-        // Dados atualizados do usuário
-        UsersRequestDTO updatedUserData = new UsersRequestDTO("Updated Name", "updatedPassword", "updated@example.com", "987654321");
+        UsersRequestDTO updatedUserData = new UsersRequestDTO("Updated Name",
+                "updatedPassword", "updated@example.com", "987654321");
 
-        // Mock do método save do repositório
         when(repository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Chama o método de atualização
         User updatedUser = userService.update(1L, updatedUserData);
 
-        // Verificações
         assertThat(updatedUser).isNotNull();
         assertThat(updatedUser.getName()).isEqualTo("Updated Name");
         assertThat(updatedUser.getPassword()).isEqualTo("updatedPassword");
         assertThat(updatedUser.getEmail()).isEqualTo("updated@example.com");
         assertThat(updatedUser.getCpf()).isEqualTo("987654321");
 
-        // Verifica se o método save foi chamado no repositório com o usuário atualizado
         verify(repository, times(1)).save(any(User.class));
     }
 
@@ -116,21 +111,17 @@ public class UserServiceTest {
         assertThatThrownBy(() -> userService.update(2L, updatedUserData))
                 .isInstanceOf(ResourceNotFoundException.class);
 
-        // Certifica-se de que o método save não foi chamado
         verify(repository, never()).save(any(User.class));
     }
 
 
     @Test
     public void getAllUsers_ReturnsListOfUsers() {
-        // Mockando o método findAll do repositório para retornar uma Page
         Page<User> userPage = new PageImpl<>(USER_LIST);
         when(repository.findAll(PageRequest.of(0, 10))).thenReturn(userPage);
 
-        // Chamando o método do serviço
         Page<User> users = userService.findAll(0, 10);
 
-        // Verificando as condições de teste
         assertThat(users.getContent()).isNotNull().hasSize(2);
     }
 
@@ -138,13 +129,10 @@ public class UserServiceTest {
     public void getAllUsers_ReturnsEmptyList() {
         Page<User> emptyUserPage = new PageImpl<>(Collections.emptyList());
 
-        // Mockando o método findAll do repositório para retornar uma Page vazia
         when(repository.findAll((Pageable) any())).thenReturn(emptyUserPage);
 
-        // Chamando o método do serviço
         Page<User> users = userService.findAll(0,10);
 
-        // Verificando as condições de teste
         assertThat(users.getContent()).isNotNull().isEmpty();
     }
 
