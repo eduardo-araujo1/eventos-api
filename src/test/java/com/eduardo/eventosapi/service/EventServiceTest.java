@@ -2,7 +2,7 @@ package com.eduardo.eventosapi.service;
 
 import com.eduardo.eventosapi.entities.Event;
 import com.eduardo.eventosapi.exception.ResourceNotFoundException;
-import com.eduardo.eventosapi.repositories.EventRepostirory;
+import com.eduardo.eventosapi.repositories.EventRepository;
 import com.eduardo.eventosapi.services.EventService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ public class EventServiceTest {
     public static final List<Event> EVENT_LIST = Arrays.asList(EVENT1, EVENT2);
 
     @Mock
-    private EventRepostirory repostirory;
+    private EventRepository repostirory;
 
     @InjectMocks
     private EventService eventService;

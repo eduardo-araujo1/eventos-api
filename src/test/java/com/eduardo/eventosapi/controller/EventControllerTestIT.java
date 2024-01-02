@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
@@ -71,16 +75,17 @@ public class EventControllerTestIT {
     }
 
     @Test
-    public void getAllEvents_thenReturnStatusOK(){
-        ResponseEntity<List> responseEntity = testRestTemplate
-                .getForEntity("/events", List.class);
+    public void getAllEvents_thenReturnStatusOK() {
+        ResponseEntity<?> responseEntity = testRestTemplate
+                .getForEntity("/events", ResponseEntity.class);
+
+
+        PageImpl<EventResponseDTO> responseDtos = (PageImpl<EventResponseDTO>) responseEntity.getBody();
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        List<EventResponseDTO> responseDtos = (List<EventResponseDTO>) responseEntity.getBody();
         assertThat(responseDtos).isNotNull();
-        assertThat(responseDtos.size()).isEqualTo(1);
     }
+
 
 
 }

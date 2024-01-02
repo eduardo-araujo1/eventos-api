@@ -5,7 +5,7 @@ import com.eduardo.eventosapi.entities.Registration;
 import com.eduardo.eventosapi.entities.User;
 import com.eduardo.eventosapi.exception.EntityNotFoundException;
 import com.eduardo.eventosapi.exception.RegistrationException;
-import com.eduardo.eventosapi.repositories.EventRepostirory;
+import com.eduardo.eventosapi.repositories.EventRepository;
 import com.eduardo.eventosapi.repositories.RegistrationRepository;
 import com.eduardo.eventosapi.repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ public class RegistrationService {
 
     private final RegistrationRepository registrationRepository;
     private final UsersRepository usersRepository;
-    private final EventRepostirory eventRepostirory;
+    private final EventRepository eventRepository;
 
     @Transactional
     public void registerUserForEvent(Long userId, Long eventId) {
         User user = usersRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o ID: " + userId));
 
-        Event event = eventRepostirory.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado com o ID:" + eventId));
 
         if (isUserAlreadyRegistered(user, event)) {
