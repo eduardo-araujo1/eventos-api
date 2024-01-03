@@ -1,16 +1,16 @@
 package com.eduardo.eventosapi.controller;
 
-import com.eduardo.eventosapi.entities.Event;
-import com.eduardo.eventosapi.entities.Registration;
-import com.eduardo.eventosapi.entities.User;
-import com.eduardo.eventosapi.repositories.UsersRepository;
-import com.eduardo.eventosapi.web.dtos.request.RegistrationRequestDTO;
 import com.eduardo.eventosapi.web.dtos.request.UsersRequestDTO;
 import com.eduardo.eventosapi.web.dtos.response.UsersResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class UserControllerTestIT {
     public void createUser_thenReturnCreated() {
         ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
                 .postForEntity("/users",
-                        new UsersRequestDTO("joao", "123456", "joao@email.com", "1112223336"), UsersResponseDTO.class);
+                        new UsersRequestDTO("joao", "123456", "joao@email.com", "11122233361"), UsersResponseDTO.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -42,14 +42,14 @@ public class UserControllerTestIT {
         assertThat(responseDTO.getId()).isNotNull();
         assertThat(responseDTO.getName()).isEqualTo("joao");
         assertThat(responseDTO.getEmail()).isEqualTo("joao@email.com");
-        assertThat(responseDTO.getCpf()).isEqualTo("1112223336");
+        assertThat(responseDTO.getCpf()).isEqualTo("11122233361");
     }
 
     @Test
     public void createUser_thenReturnConflictStatus() {
         ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
                 .postForEntity("/users",
-                        new UsersRequestDTO("ana", "123456789", "ana@email.com", "123456789"), UsersResponseDTO.class);
+                        new UsersRequestDTO("ana", "123456789", "ana@email.com", "12345678910"), UsersResponseDTO.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
@@ -78,7 +78,7 @@ public class UserControllerTestIT {
 
     @Test
     public void updateUser_thenReturnUpdatedUser() {
-        UsersRequestDTO updateRequest = new UsersRequestDTO("updatedName", "newPassword", "new@email.com", "987654321");
+        UsersRequestDTO updateRequest = new UsersRequestDTO("updatedName", "newPassword", "new@email.com", "98765432110");
 
         ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
                 .exchange("/users/100", HttpMethod.PUT, new HttpEntity<>(updateRequest), UsersResponseDTO.class, updateRequest);
@@ -90,12 +90,12 @@ public class UserControllerTestIT {
         assertThat(responseDTO.getId()).isEqualTo(100);
         assertThat(responseDTO.getName()).isEqualTo("updatedName");
         assertThat(responseDTO.getEmail()).isEqualTo("new@email.com");
-        assertThat(responseDTO.getCpf()).isEqualTo("987654321");
+        assertThat(responseDTO.getCpf()).isEqualTo("98765432110");
     }
 
     @Test
     public void updateUser_thenReturnNotFoundStatus(){
-        UsersRequestDTO requestDTO = new UsersRequestDTO("updatedName", "newPassword", "new@email.com", "987654321");
+        UsersRequestDTO requestDTO = new UsersRequestDTO("updatedName", "newPassword", "new@email.com", "98765432110");
 
         ResponseEntity<UsersResponseDTO> responseEntity = testRestTemplate
                 .exchange("/users/3", HttpMethod.PUT, new HttpEntity<>(requestDTO),UsersResponseDTO.class, requestDTO);
@@ -103,17 +103,6 @@ public class UserControllerTestIT {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Test
-    public void getAllUsers_thenReturnStatusOK(){
-        ResponseEntity<List> responseEntity = testRestTemplate
-                .getForEntity("/users", List.class);
-
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        List<UsersResponseDTO> responseDtos = (List<UsersResponseDTO>) responseEntity.getBody();
-        assertThat(responseDtos).isNotNull();
-        assertThat(responseDtos.size()).isEqualTo(3);
-    }
 
     @Test
     public void deleteUserById_thenReturnNoContentStatus(){

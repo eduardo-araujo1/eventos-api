@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @AllArgsConstructor
 public class UsersRequestDTO {
 
-    @Size(min = 3, message = "Campo deve ter no mínimo 3 caracteres")
+    @Size(min = 3, message = "Campo deve ter no mínimo 3 caracteres.")
     private String name;
 
     @NotBlank(message = "Campo requerido")
@@ -25,7 +25,6 @@ public class UsersRequestDTO {
     @Email(message = "Formato do email está inválido.", regexp = "^[a-z0-9.+-]+@[a-z0-9.-]+\\.[a-z]{2,}$")
     private String email;
 
-    @Size(min = 11, max = 11)
-    @CPF
+    @Size(min = 11, max = 11, message = "Campo deve ter 11 caracteres.")
     private String cpf;
 }

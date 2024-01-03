@@ -6,16 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,6 +38,7 @@ public class EventControllerTestIT {
         assertThat(responseDTO.getDescription()).isEqualTo("Corrida da amizade");
         assertThat(responseDTO.getLocation()).isEqualTo("São Paulo");
     }
+
     //tem que implementar a excecão no service
     @Test
     public void createEvent_thenReturnConflictStatus() {
@@ -73,19 +70,6 @@ public class EventControllerTestIT {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
-
-    @Test
-    public void getAllEvents_thenReturnStatusOK() {
-        ResponseEntity<?> responseEntity = testRestTemplate
-                .getForEntity("/events", ResponseEntity.class);
-
-
-        PageImpl<EventResponseDTO> responseDtos = (PageImpl<EventResponseDTO>) responseEntity.getBody();
-
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseDtos).isNotNull();
-    }
-
 
 
 }

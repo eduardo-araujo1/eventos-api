@@ -1,8 +1,6 @@
 package com.eduardo.eventosapi.service;
 
-import com.eduardo.eventosapi.entities.Event;
 import com.eduardo.eventosapi.entities.User;
-import com.eduardo.eventosapi.exception.DataBaseException;
 import com.eduardo.eventosapi.exception.EmailUniqueViolation;
 import com.eduardo.eventosapi.exception.EntityNotFoundException;
 import com.eduardo.eventosapi.exception.ResourceNotFoundException;
@@ -19,7 +17,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

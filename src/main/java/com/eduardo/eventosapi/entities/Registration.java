@@ -3,6 +3,7 @@ package com.eduardo.eventosapi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
@@ -12,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Registration {
+public class Registration  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
